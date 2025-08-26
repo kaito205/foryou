@@ -1,0 +1,266 @@
+.text-white {
+  color: white !important;
+}
+
+.btn-audio-toggle {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.music-status {
+  display: flex;
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  z-index: 9999;
+  align-items: center;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.music-status .spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #a259f7;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+
+body.portrait-mode #landscape-warning {
+  display: flex;
+  opacity: 1;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- CÀI ĐẶT CHUNG & NỀN ---- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden; /* Giữ nguyên để tránh thanh cuộn */
+}
+
+#container {
+  width: 100vw;
+  height: 100vh;
+  /* Làm nền tối hơn và chuyển màu mượt hơn */
+  background: radial-gradient(circle at center, #0a0a1f 0%, #000000 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 11;
+}
+
+/* ---- MÀN HÌNH CẢNH BÁO XOAY NGANG ---- */
+#landscape-warning {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Nền vũ trụ sâu thẳm, màu xanh tím */
+  background: radial-gradient(ellipse at center, #1c1a3a 0%, #0c0a1f 100%);
+  color: #e0eaff; /* Màu chữ chung */
+  display: none; /* Ẩn ban đầu, JS sẽ điều khiển */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out;
+}
+/* Kích hoạt hiển thị cảnh báo */
+body.portrait #landscape-warning {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Nội dung cảnh báo - Nâng cấp lớn ở đây! */
+#landscape-warning .warning-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  /* Nền thủy tinh mờ, có chiều sâu */
+  background: rgba(28, 26, 58, 0.6);
+  backdrop-filter: blur(10px); /* Hiệu ứng kính mờ */
+  /* Đường viền phát sáng mềm mại */
+  border: 1.5px solid rgba(173, 216, 230, 0.3); /* Lightblue mờ */
+  /* Đổ bóng đa lớp để tạo hiệu ứng "hào quang" */
+  box-shadow: 0 0 40px rgba(78, 88, 216, 0.5),
+    /* Bóng tím xanh lan tỏa */ 0 0 15px rgba(255, 255, 255, 0.1),
+    /* Bóng trắng nhẹ bên trong */ inset 0 0 8px rgba(173, 216, 230, 0.2); /* Viền sáng bên trong */
+  transform: scale(0.95);
+  opacity: 0;
+  animation: fadeInContent 0.6s 0.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+@keyframes fadeInContent {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+#landscape-warning h1 {
+  font-family: "Orbitron", "Montserrat", sans-serif; /* Giữ font Orbitron */
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  /* Thêm hiệu ứng text-shadow phát sáng */
+  text-shadow: 0 0 12px rgba(230, 230, 255, 0.8), 0 0 4px rgba(255, 255, 255, 1);
+}
+#landscape-warning h1:nth-of-type(2) {
+  font-size: 1.5rem; /* Giảm kích thước "Tinh Cầu" */
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+#landscape-warning p {
+  font-size: 1.1rem;
+  color: #c0c8ff; /* Màu chữ dịu hơn */
+  line-height: 1.5;
+  text-shadow: 0 0 6px rgba(192, 200, 255, 0.7);
+}
+#landscape-warning p:last-of-type {
+  margin-top: 1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Nền sao động */
+#landscape-warning .stars-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: transparent;
+  overflow: hidden; /* Đảm bảo sao không tràn ra ngoài */
+}
+#landscape-warning .stars-bg::before,
+#landscape-warning .stars-bg::after {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  /* Các hạt sao nhỏ, mịn hơn */
+  background-image: radial-gradient(circle, #fff 1px, transparent 1px),
+    radial-gradient(circle, #c0c8ff 1px, transparent 1px),
+    radial-gradient(circle, #fff 0.5px, transparent 0.5px);
+  background-size: 100px 100px, 150px 150px, 60px 60px;
+  background-position: 0 0, 50px 50px, 30px 30px;
+  opacity: 0;
+  animation: stars-move 30s linear infinite, fadeInStars 1s ease-out forwards;
+}
+#landscape-warning .stars-bg::after {
+  background-size: 150px 150px, 80px 80px, 120px 120px;
+  background-position: 75px 75px, 40px 40px, 10px 10px;
+  animation-duration: 45s;
+}
+@keyframes fadeInStars {
+  to {
+    opacity: 0.6;
+  }
+}
+@keyframes stars-move {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  } /* Chuyển động theo chiều dọc */
+}
+
+/* ---- HIỆU ỨNG BLUR VÀ OVERLAY ---- */
+#dark-overlay {
+  position: fixed;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Lớp phủ tối hơn để tạo tương phản */
+  background: rgba(0, 0, 5, 0.95);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.8s ease-in-out;
+}
+body.intro-started #dark-overlay {
+  opacity: 0;
+  transition-duration: 1.5s;
+}
+body.portrait #dark-overlay {
+  display: none !important;
+}
+
+/* Hiệu ứng làm mờ canvas nền */
+body.portrait #container canvas {
+  filter: blur(10px) brightness(0.6);
+  opacity: 0.4;
+  transition: filter 0.8s ease-out, opacity 0.8s ease-out;
+}
+body:not(.portrait) #container canvas {
+  filter: blur(0) brightness(1);
+  opacity: 1;
+  transition: filter 1.2s ease-in, opacity 1.2s ease-in;
+}
+
+/* ---- ICON XOAY ĐIỆN THOẠI ---- */
+.rotate-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 1.2rem auto;
+  /* Cập nhật màu sắc cho icon để đồng bộ */
+  background: url('data:image/svg+xml;utf8,<svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="16" width="32" height="24" rx="6" fill="%23fff" stroke="%23c0c8ff" stroke-width="2"/><path d="M28 8v4" stroke="%23c0c8ff" stroke-width="2" stroke-linecap="round"/><path d="M28 44v4" stroke="%23c0c8ff" stroke-width="2" stroke-linecap="round"/><path d="M8 28h4" stroke="%23c0c8ff" stroke-width="2" stroke-linecap="round"/><path d="M44 28h4" stroke="%23c0c8ff" stroke-width="2" stroke-linecap="round"/><path d="M18 38l-4 4" stroke="%23a985d4" stroke-width="2" stroke-linecap="round"/><path d="M38 38l4 4" stroke="%23a985d4" stroke-width="2" stroke-linecap="round"/><path d="M18 18l-4-4" stroke="%23a985d4" stroke-width="2" stroke-linecap="round"/><path d="M38 18l4-4" stroke="%23a985d4" stroke-width="2" stroke-linecap="round"/></svg>')
+    center/contain no-repeat;
+  animation: rotate-phone 1.8s infinite cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+@keyframes rotate-phone {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-25deg) scale(1.1);
+  }
+  50% {
+    transform: rotate(0deg) scale(1);
+  }
+  75% {
+    transform: rotate(25deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
