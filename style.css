@@ -55,13 +55,12 @@ body.portrait-mode #landscape-warning {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow: hidden; /* Giữ nguyên để tránh thanh cuộn */
+  overflow: hidden; 
 }
 
 #container {
   width: 100vw;
   height: 100vh;
-  /* Làm nền tối hơn và chuyển màu mượt hơn */
   background: radial-gradient(circle at center, #0a0a1f 0%, #000000 100%);
   position: fixed;
   top: 0;
@@ -189,11 +188,13 @@ body.portrait #landscape-warning {
   background-position: 75px 75px, 40px 40px, 10px 10px;
   animation-duration: 45s;
 }
+
 @keyframes fadeInStars {
   to {
     opacity: 0.6;
   }
 }
+
 @keyframes stars-move {
   from {
     transform: translateY(0);
@@ -203,7 +204,7 @@ body.portrait #landscape-warning {
   } /* Chuyển động theo chiều dọc */
 }
 
-/* ---- HIỆU ỨNG BLUR VÀ OVERLAY ---- */
+
 #dark-overlay {
   position: fixed;
   z-index: 5;

@@ -51,7 +51,7 @@ function createGlowMaterial(color, size = 128, opacity = 0.55) {
     return new THREE.Sprite(material);
 }
 
-// ---- TẠO CÁC THÀNH PHẦN CỦA SCENE ----
+
 
 // Glow trung tâm
 const centralGlow = createGlowMaterial('rgba(255,255,255,0.8)', 156, 0.25);
