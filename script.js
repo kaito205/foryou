@@ -15,7 +15,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 document.getElementById('container').appendChild(renderer.domElement);
 
-// ---- KHỞI TẠO CONTROLS ----
+// ---- KHỞI TẠO Love ----
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.autoRotate = true;
@@ -591,7 +591,7 @@ const stormShader = {
     `
 };
 
-// Tạo vật thể hành tinh
+// Tin chậm  cham hành tinh
 const planetRadius = 10;
 const planetGeometry = new THREE.SphereGeometry(planetRadius, 48, 48);
 const planetTexture = createPlanetTexture();
@@ -609,7 +609,7 @@ scene.add(planet);
 
 // ---- TẠO CÁC VÒNG CHỮ QUAY QUANH HÀNH TINH ----
 const ringTexts = [
-    'LoveLoom',
+    'Dida Nurwahidah Zakiyah',
     ...(window.dataLove2Loveloom && window.dataLove2Loveloom.data.ringTexts ? window.dataLove2Loveloom.data.ringTexts : [])
 ];
 
@@ -746,7 +746,7 @@ function createTextRings() {
         window.textRings.push(ringGroup);
     }
 }
-
+ 
 createTextRings();
 
 function updateTextRingsRotation() {
@@ -1072,7 +1072,7 @@ function createHintText() {
     canvas.width = canvas.height = canvasSize;
     const context = canvas.getContext('2d');
     const fontSize = 50; 
-    const text = 'Chạm Vào Tinh Cầu';
+    const text = 'klik ke planet';
     context.font = `bold ${fontSize}px Arial, sans-serif`;
     context.textAlign = 'center';
     context.textBaseline = 'middle';

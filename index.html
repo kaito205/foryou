@@ -2,15 +2,14 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Galaxy</title>
-    <link rel="icon" type="image/png" href="/heart.png"/>
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galaxy</title>
+  <link rel="icon" type="image/png" href="/heart.png"/>
+  <link rel="stylesheet" href="./style.css" />
 
-    <!-- Importmap cho THREE.js -->
-    <script type="importmap">
+  <!-- Importmap cho THREE.js -->
+  <script type="importmap">
     {
       "imports": {
         "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
@@ -21,148 +20,107 @@
     }
   </script>
 
-    <style>
-        .text-white {
-            color: white !important;
-        }
+  <style>
+    #musicButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      background-color: #ffffff10;
+      color: white;
+      border: 1px solid white;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 9999;
+      font-weight: bold;
+      backdrop-filter: blur(5px);
+    }
+    #musicButton:hover {
+      background-color: #ffffff30;
+    }
 
-        .btn-audio-toggle {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .music-status {
-            display: flex;
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            z-index: 9999;
-            align-items: center;
-            font-family: sans-serif;
-            font-size: 14px;
-        }
-
-        .music-status .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #a259f7;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        body.portrait-mode #landscape-warning {
-            display: flex;
-            opacity: 1;
-        }
-    </style>
+    body.portrait-mode #landscape-warning {
+      display: flex;
+      opacity: 1;
+    }
+  </style>
 </head>
 
 <body>
-    <div id="container"></div>
+  <div id="container"></div>
 
-    <div id="landscape-warning">
-        <div class="warning-content">
-            <div class="rotate-icon"></div>
-            <h1>Love</h1>
-            <h1>Dida Nurwahidah Zakiyah</h1>
-            <div class="stars-bg"></div>
-        </div>
+  <div id="landscape-warning">
+    <div class="warning-content">
+      <div class="rotate-icon"></div>
+      <p>Love</p>
+      <h1>Dida Nurwahidah Zakiyah</h1>
+      <div class="stars-bg"></div>
     </div>
+  </div>
 
-    <div id="dark-overlay"></div>
-    <div id="info"></div>
+  <div id="dark-overlay"></div>
+  <div id="info"></div>
 
-    <script>
-        window.dataLove2Loveloom = {
-            template: "DidaNurwahidahZakiyah",
-            data: {
-                keychain: { name: "Loveloom", phone: "Loveloom", address: "Loveloom" },
-                ringTexts: ["Dida", "Nurwahidah", "Zakiyah", "Loveloom"],
-            }
-        };
-    </script>
+  <!-- Tombol musik tunggal -->
+  <button id="musicButton" disabled>Mainkan Musik 🎵</button>
 
-    <button id="toggle-audio" class="text-white btn-audio-toggle"
-      style="position: absolute; top: 10px; right: 10px; z-index: 999;">
-      <i id="audio-icon" class="fa-solid fa-volume-xmark"></i>
-    </button>
+  <script>
+    const musicManager = {
+      audio: null,
+      isPlaying: false,
 
-    <script type="module" src="./script.js"></script>
+      init() {
+        this.audio = new Audio('./Ly.mp3');
+        this.audio.loop = true;
+        this.audio.volume = 0.7;
+        this.audio.preload = "auto";
 
-    <script>
-        const musicManager = {
-            audio: null,
-            isPlaying: false,
-
-            init() {
-               
-                this.audio = new Audio('./Ly.mp3');
-                this.audio.loop = true;
-                this.audio.volume = 0.7;
-                this.audio.preload = "auto";
-
-                this.audio.onplay = () => {
-                    this.isPlaying = true;
-                    this.updateUI();
-                };
-
-                this.audio.onpause = () => {
-                    this.isPlaying = false;
-                    this.updateUI();
-                };
-
-                this.updateUI();
-            },
-
-            togglePlayback() {
-                if (!this.audio) return;
-                if (this.audio.paused) {
-                    this.audio.play().catch(e => {
-                        console.warn('Lỗi phát nhạc:', e);
-                    });
-                } else {
-                    this.audio.pause();
-                }
-            },
-
-            updateUI() {
-                const icon = document.getElementById('audio-icon');
-                if (this.isPlaying) {
-                    icon.classList.remove('fa-volume-xmark');
-                    icon.classList.add('fa-volume-high');
-                } else {
-                    icon.classList.remove('fa-volume-high');
-                    icon.classList.add('fa-volume-xmark');
-                }
-            }
+        this.audio.oncanplaythrough = () => {
+          const btn = document.getElementById('musicButton');
+          btn.disabled = false;
+          this.updateUI();
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            musicManager.init();
-            document.getElementById('toggle-audio').addEventListener('click', () => {
-                musicManager.togglePlayback();
-            });
-        });
-    </script>
+        this.audio.onplay = () => {
+          this.isPlaying = true;
+          this.updateUI();
+        };
+
+        this.audio.onpause = () => {
+          this.isPlaying = false;
+          this.updateUI();
+        };
+      },
+
+      togglePlayback() {
+        if (!this.audio) return;
+        if (this.audio.paused) {
+          this.audio.play().catch(e => {
+            console.warn('Gagal play musik:', e);
+          });
+        } else {
+          this.audio.pause();
+        }
+      },
+
+      updateUI() {
+        const btn = document.getElementById('musicButton');
+        if (this.isPlaying) {
+          btn.textContent = "Pause Musik ⏸️";
+        } else {
+          btn.textContent = "Mainkan Musik 🎵";
+        }
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      musicManager.init();
+      document.getElementById('musicButton').addEventListener('click', () => {
+        musicManager.togglePlayback();
+      });
+    });
+  </script>
+
+  <script type="module" src="./script.js"></script>
 </body>
-
 </html>
